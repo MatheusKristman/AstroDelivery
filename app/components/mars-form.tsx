@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { cn } from "@/lib/utils";
+import Message from "./message";
 
 const formSchema = z.object({
   lot: z
@@ -18,6 +19,9 @@ const MarsForm = () => {
   const [inputsFocused, setInputsFocused] = useState({
     lot: false,
   });
+  const [message, setMessage] = useState<string | null>(null);
+  const [messageAnimationShown, setMessageAnimationShown] =
+    useState<boolean>(false);
 
   const {
     register,
@@ -34,6 +38,7 @@ const MarsForm = () => {
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     console.log(values);
+    showToaster("Lote cadastrado com sucesso");
   };
 
   const handleNumber = (e: ChangeEvent<HTMLInputElement>) => {
@@ -50,6 +55,14 @@ const MarsForm = () => {
     }
 
     setInputsFocused((inputs) => ({ ...inputs, [input]: value }));
+  };
+
+  const showToaster = (msg: string) => {
+    setMessage(msg);
+    setMessageAnimationShown(true);
+
+    setTimeout(() => setMessage(null), 3000);
+    setTimeout(() => setMessageAnimationShown(false), 2700);
   };
 
   return (
@@ -91,6 +104,10 @@ const MarsForm = () => {
       <button type="submit" className="button">
         Cadastrar
       </button>
+
+      {message && (
+        <Message animation={messageAnimationShown} message={message} />
+      )}
     </form>
   );
 };

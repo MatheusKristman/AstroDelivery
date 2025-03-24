@@ -1,7 +1,7 @@
 "use client";
 
 import { z } from "zod";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -36,10 +36,40 @@ const EarthForm = () => {
     getValues,
     setValue,
     reset,
+    watch,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(formSchema),
+    defaultValues: {
+      address: "",
+      number: "",
+      city: "",
+      country: "",
+    },
   });
+
+  const address = watch("address");
+  const number = watch("number");
+  const city = watch("city");
+  const country = watch("country");
+
+  useEffect(() => {
+    if (address.length > 0) {
+      setInputsFocused((inputs) => ({ ...inputs, address: true }));
+    }
+
+    if (number.length > 0) {
+      setInputsFocused((inputs) => ({ ...inputs, number: true }));
+    }
+
+    if (city.length > 0) {
+      setInputsFocused((inputs) => ({ ...inputs, city: true }));
+    }
+
+    if (country.length > 0) {
+      setInputsFocused((inputs) => ({ ...inputs, country: true }));
+    }
+  }, [address, number, city, country]);
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     const currentEarthAddresses = localStorage.getItem("earthAddresses");

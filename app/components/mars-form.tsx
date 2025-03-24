@@ -1,7 +1,7 @@
 "use client";
 
 import { z } from "zod";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -26,6 +26,7 @@ const MarsForm = () => {
     getValues,
     setValue,
     reset,
+    watch,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(formSchema),
@@ -33,6 +34,14 @@ const MarsForm = () => {
       lot: "",
     },
   });
+
+  const lot = watch("lot");
+
+  useEffect(() => {
+    if (lot.length > 0) {
+      setInputsFocused((inputs) => ({ ...inputs, lot: true }));
+    }
+  }, [lot]);
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     const currentMarsAddresses = localStorage.getItem("marsAddresses");

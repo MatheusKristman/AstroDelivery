@@ -8,7 +8,7 @@ const gabarito = Gabarito({
 });
 
 export const metadata: Metadata = {
-  title: "Astro Delivery",
+  title: "AstroDelivery",
   description: "Cadastre e gerencie endereços na Terra e em Marte com uma interface intuitiva e moderna.",
 };
 

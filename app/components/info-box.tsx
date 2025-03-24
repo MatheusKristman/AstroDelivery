@@ -4,7 +4,7 @@ const InfoBox = () => {
   return (
     <div className="relative w-full rounded-3xl overflow-hidden">
       <div className="relative w-full h-full">
-        <Image src="/item-1.jpg" alt="Item 1" fill className="object-cover object-center" />
+        <Image src="/item-1.jpg" alt="Item 1" fill className="object-cover object-center" priority />
       </div>
 
       <div className="absolute inset-0 w-full h-full bg-foreground/50 px-6 py-5 flex flex-col justify-end gap-3.5 backdrop-blur-xs md:h-fit md:bottom-0 md:top-auto">

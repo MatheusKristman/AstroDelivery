@@ -3,9 +3,6 @@
 import Image from "next/image";
 import { useState } from "react";
 
-// import MarsForm from "@/app/components/mars-form";
-// import EarthForm from "@/app/components/earth-form";
-// import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 import EarthForm from "./earth-form";
 import MarsForm from "./mars-form";
@@ -28,8 +25,7 @@ const Forms = () => {
           <h1 className="text-3xl text-foreground">Cadastro de Endereços</h1>
 
           <p className="text-base text-foreground/75">
-            Registre locais de entrega na Terra ou em Marte e facilite o
-            transporte entre os planetas!
+            Registre locais de entrega na Terra ou em Marte e facilite o transporte entre os planetas!
           </p>
         </div>
 
@@ -40,7 +36,7 @@ const Forms = () => {
                 "cursor-pointer bg-transparent px-4 py-2 h-10 rounded-xl text-base text-foreground transition",
                 {
                   "bg-primary shadow-sm text-white": planet === "earth",
-                },
+                }
               )}
               onClick={() => setPlanet("earth")}
             >
@@ -52,7 +48,7 @@ const Forms = () => {
                 "cursor-pointer bg-transparent px-4 py-2 h-10 rounded-xl text-base text-foreground transition",
                 {
                   "bg-primary shadow-sm text-white": planet === "mars",
-                },
+                }
               )}
               onClick={() => setPlanet("mars")}
             >

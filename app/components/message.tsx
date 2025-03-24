@@ -15,7 +15,7 @@ const Message = ({ animation, message, type }: MessageProps) => {
         "w-full rounded-xl px-6 py-4 bg-slate-400 flex items-center justify-center",
         animation ? "animate-fade-in" : "animate-fade-out",
         type === "error" && "bg-red-400",
-        type === "success" && "bg-green-400",
+        type === "success" && "bg-green-400"
       )}
     >
       <span

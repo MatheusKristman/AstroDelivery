@@ -27,11 +27,8 @@ const EarthForm = () => {
     country: false,
   });
   const [message, setMessage] = useState<string | null>(null);
-  const [messageAnimationShown, setMessageAnimationShown] =
-    useState<boolean>(false);
-  const [messageType, setMessageType] = useState<"success" | "error" | null>(
-    null,
-  );
+  const [messageAnimationShown, setMessageAnimationShown] = useState<boolean>(false);
+  const [messageType, setMessageType] = useState<"success" | "error" | null>(null);
 
   const {
     register,
@@ -76,10 +73,7 @@ const EarthForm = () => {
 
       earthAddressesFormatted.push(values);
 
-      localStorage.setItem(
-        "earthAddresses",
-        JSON.stringify(earthAddressesFormatted),
-      );
+      localStorage.setItem("earthAddresses", JSON.stringify(earthAddressesFormatted));
 
       showToaster("Endereço cadastrado com sucesso", "success");
       reset();
@@ -97,10 +91,7 @@ const EarthForm = () => {
     setValue("number", valueFormatted);
   };
 
-  const handleFocus = (
-    input: "address" | "number" | "city" | "country",
-    value: boolean,
-  ) => {
+  const handleFocus = (input: "address" | "number" | "city" | "country", value: boolean) => {
     const currentInputValue = getValues(input);
 
     if (currentInputValue) {
@@ -121,10 +112,7 @@ const EarthForm = () => {
   };
 
   return (
-    <form
-      onSubmit={handleSubmit(onSubmit)}
-      className="w-full flex flex-col gap-10"
-    >
+    <form onSubmit={handleSubmit(onSubmit)} className="w-full flex flex-col gap-10">
       <div className="w-full flex flex-col gap-8">
         <div className="w-full grid grid-cols-1 gap-8 sm:grid-cols-[calc(65%-8px)_calc(35%-8px)] sm:gap-4">
           <div className="relative w-full h-fit flex flex-col gap-2">
@@ -149,11 +137,7 @@ const EarthForm = () => {
               onBlur={() => handleFocus("address", false)}
             />
 
-            {errors.address && (
-              <span className="text-red-500 leading-tight text-sm">
-                {errors.address.message}
-              </span>
-            )}
+            {errors.address && <span className="text-red-500 leading-tight text-sm">{errors.address.message}</span>}
           </div>
 
           <div className="relative w-full h-fit flex flex-col gap-2">
@@ -179,11 +163,7 @@ const EarthForm = () => {
               onBlur={() => handleFocus("number", false)}
             />
 
-            {errors.number && (
-              <span className="text-red-500 leading-tight text-sm">
-                {errors.number.message}
-              </span>
-            )}
+            {errors.number && <span className="text-red-500 leading-tight text-sm">{errors.number.message}</span>}
           </div>
         </div>
 
@@ -210,11 +190,7 @@ const EarthForm = () => {
               onBlur={() => handleFocus("city", false)}
             />
 
-            {errors.city && (
-              <span className="text-red-500 leading-tight text-sm">
-                {errors.city.message}
-              </span>
-            )}
+            {errors.city && <span className="text-red-500 leading-tight text-sm">{errors.city.message}</span>}
           </div>
 
           <div className="relative w-full h-fit flex flex-col gap-2">
@@ -239,11 +215,7 @@ const EarthForm = () => {
               onBlur={() => handleFocus("country", false)}
             />
 
-            {errors.country && (
-              <span className="text-red-500 leading-tight text-sm">
-                {errors.country.message}
-              </span>
-            )}
+            {errors.country && <span className="text-red-500 leading-tight text-sm">{errors.country.message}</span>}
           </div>
         </div>
       </div>
@@ -252,13 +224,7 @@ const EarthForm = () => {
         Cadastrar
       </button>
 
-      {message && (
-        <Message
-          animation={messageAnimationShown}
-          message={message}
-          type={messageType}
-        />
-      )}
+      {message && <Message animation={messageAnimationShown} message={message} type={messageType} />}
     </form>
   );
 };

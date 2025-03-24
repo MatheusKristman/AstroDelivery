@@ -9,10 +9,7 @@ import { cn } from "@/lib/utils";
 import Message from "./message";
 
 const formSchema = z.object({
-  lot: z
-    .string()
-    .min(1, "O lote é obrigatório")
-    .max(4, "O lote precisa ter no máximo 4 números"),
+  lot: z.string().min(1, "O lote é obrigatório").max(4, "O lote precisa ter no máximo 4 números"),
 });
 
 const MarsForm = () => {
@@ -20,11 +17,8 @@ const MarsForm = () => {
     lot: false,
   });
   const [message, setMessage] = useState<string | null>(null);
-  const [messageAnimationShown, setMessageAnimationShown] =
-    useState<boolean>(false);
-  const [messageType, setMessageType] = useState<"success" | "error" | null>(
-    null,
-  );
+  const [messageAnimationShown, setMessageAnimationShown] = useState<boolean>(false);
+  const [messageType, setMessageType] = useState<"success" | "error" | null>(null);
 
   const {
     register,
@@ -64,10 +58,7 @@ const MarsForm = () => {
 
       marsAddressesFormatted.push(values);
 
-      localStorage.setItem(
-        "marsAddresses",
-        JSON.stringify(marsAddressesFormatted),
-      );
+      localStorage.setItem("marsAddresses", JSON.stringify(marsAddressesFormatted));
 
       showToaster("Lote cadastrado com sucesso", "success");
       reset();
@@ -106,10 +97,7 @@ const MarsForm = () => {
   };
 
   return (
-    <form
-      onSubmit={handleSubmit(onSubmit)}
-      className="w-full flex flex-col gap-10"
-    >
+    <form onSubmit={handleSubmit(onSubmit)} className="w-full flex flex-col gap-10">
       <div className="relative w-full h-fit flex flex-col gap-2">
         <label
           htmlFor="lot"
@@ -134,24 +122,14 @@ const MarsForm = () => {
           maxLength={4}
         />
 
-        {errors.lot && (
-          <span className="text-red-500 leading-tight text-sm">
-            {errors.lot.message}
-          </span>
-        )}
+        {errors.lot && <span className="text-red-500 leading-tight text-sm">{errors.lot.message}</span>}
       </div>
 
       <button type="submit" className="button">
         Cadastrar
       </button>
 
-      {message && (
-        <Message
-          animation={messageAnimationShown}
-          message={message}
-          type={messageType}
-        />
-      )}
+      {message && <Message animation={messageAnimationShown} message={message} type={messageType} />}
     </form>
   );
 };

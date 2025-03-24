@@ -3,9 +3,12 @@
 import Image from "next/image";
 import { useState } from "react";
 
-import MarsForm from "@/app/components/mars-form";
-import EarthForm from "@/app/components/earth-form";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+// import MarsForm from "@/app/components/mars-form";
+// import EarthForm from "@/app/components/earth-form";
+// import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { cn } from "@/lib/utils";
+import EarthForm from "./earth-form";
+import MarsForm from "./mars-form";
 
 const Forms = () => {
   const [planet, setPlanet] = useState("earth");
@@ -31,32 +34,35 @@ const Forms = () => {
         </div>
 
         <div className="w-full flex flex-col gap-8">
-          <Tabs
-            defaultValue="earth"
-            value={planet}
-            onValueChange={setPlanet}
-            className="w-full gap-8"
-          >
-            <div className="w-full flex flex-col gap-3">
-              <span className="text-base font-medium text-foreground">
-                Selecione o planeta
-              </span>
+          <div className="w-full bg-muted rounded-2xl p-2 grid grid-cols-2 gap-2">
+            <button
+              className={cn(
+                "cursor-pointer bg-transparent px-4 py-2 h-10 rounded-xl text-base text-foreground transition",
+                {
+                  "bg-primary shadow-sm text-white": planet === "earth",
+                },
+              )}
+              onClick={() => setPlanet("earth")}
+            >
+              Terra
+            </button>
 
-              <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="earth">Terra</TabsTrigger>
+            <button
+              className={cn(
+                "cursor-pointer bg-transparent px-4 py-2 h-10 rounded-xl text-base text-foreground transition",
+                {
+                  "bg-primary shadow-sm text-white": planet === "mars",
+                },
+              )}
+              onClick={() => setPlanet("mars")}
+            >
+              Marte
+            </button>
+          </div>
 
-                <TabsTrigger value="mars">Marte</TabsTrigger>
-              </TabsList>
-            </div>
+          {planet === "earth" && <EarthForm />}
 
-            <TabsContent value="earth">
-              <EarthForm />
-            </TabsContent>
-
-            <TabsContent value="mars">
-              <MarsForm />
-            </TabsContent>
-          </Tabs>
+          {planet === "mars" && <MarsForm />}
         </div>
       </div>
     </div>

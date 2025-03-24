@@ -1,20 +1,9 @@
 "use client";
 
 import { z } from "zod";
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
 
 import { cn } from "@/lib/utils";
 
@@ -30,7 +19,13 @@ const MarsForm = () => {
     lot: false,
   });
 
-  const form = useForm<z.infer<typeof formSchema>>({
+  const {
+    register,
+    handleSubmit,
+    getValues,
+    setValue,
+    formState: { errors },
+  } = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
       lot: "",
@@ -41,8 +36,14 @@ const MarsForm = () => {
     console.log(values);
   };
 
+  const handleNumber = (e: ChangeEvent<HTMLInputElement>) => {
+    const valueFormatted = e.target.value.replace(/\D/g, "");
+
+    setValue("lot", valueFormatted);
+  };
+
   const handleFocus = (input: "lot", value: boolean) => {
-    const currentInputValue = form.getValues(input);
+    const currentInputValue = getValues(input);
 
     if (currentInputValue) {
       return;
@@ -52,43 +53,45 @@ const MarsForm = () => {
   };
 
   return (
-    <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className="w-full flex flex-col gap-10"
-      >
-        <FormField
-          control={form.control}
-          name="lot"
-          render={({ field }) => (
-            <FormItem className="relative h-fit">
-              <FormLabel
-                className={cn(
-                  "pointer-events-none absolute top-1.5 left-3 text-base text-foreground/30 !font-normal p-0.5 bg-white transition-all duration-100",
-                  {
-                    "-top-2.5 text-sm": inputsFocused.lot,
-                  },
-                )}
-              >
-                Lote *
-              </FormLabel>
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className="w-full flex flex-col gap-10"
+    >
+      <div className="relative w-full h-fit flex flex-col gap-2">
+        <label
+          htmlFor="lot"
+          className={cn("label", {
+            "-top-2.5 text-sm": inputsFocused.lot,
+            "text-red-500": errors.lot,
+          })}
+        >
+          Lote *
+        </label>
 
-              <FormControl>
-                <Input
-                  {...field}
-                  onFocus={() => handleFocus("lot", true)}
-                  onBlur={() => handleFocus("lot", false)}
-                />
-              </FormControl>
-
-              <FormMessage />
-            </FormItem>
-          )}
+        <input
+          {...register("lot")}
+          type="text"
+          id="lot"
+          className={cn("input", {
+            "border-red-500": errors.lot,
+          })}
+          onChange={handleNumber}
+          onFocus={() => handleFocus("lot", true)}
+          onBlur={() => handleFocus("lot", false)}
+          maxLength={4}
         />
 
-        <Button>Cadastrar</Button>
-      </form>
-    </Form>
+        {errors.lot && (
+          <span className="text-red-500 leading-tight text-sm">
+            {errors.lot.message}
+          </span>
+        )}
+      </div>
+
+      <button type="submit" className="button">
+        Cadastrar
+      </button>
+    </form>
   );
 };
 

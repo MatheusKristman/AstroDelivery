@@ -1,20 +1,9 @@
 "use client";
 
 import { z } from "zod";
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
 
 import { cn } from "@/lib/utils";
 
@@ -37,25 +26,31 @@ const EarthForm = () => {
     country: false,
   });
 
-  const form = useForm<z.infer<typeof formSchema>>({
+  const {
+    register,
+    handleSubmit,
+    getValues,
+    setValue,
+    formState: { errors },
+  } = useForm({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      address: "",
-      number: "",
-      city: "",
-      country: "",
-    },
   });
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     console.log(values);
   };
 
+  const handleNumber = (e: ChangeEvent<HTMLInputElement>) => {
+    const valueFormatted = e.target.value.replace(/\D/g, "");
+
+    setValue("number", valueFormatted);
+  };
+
   const handleFocus = (
     input: "address" | "number" | "city" | "country",
     value: boolean,
   ) => {
-    const currentInputValue = form.getValues(input);
+    const currentInputValue = getValues(input);
 
     if (currentInputValue) {
       return;
@@ -65,136 +60,137 @@ const EarthForm = () => {
   };
 
   return (
-    <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className="w-full flex flex-col gap-10"
-      >
-        <div className="w-full flex flex-col gap-8">
-          <div className="w-full grid grid-cols-1 gap-8 sm:grid-cols-[calc(65%-8px)_calc(35%-8px)] sm:gap-4">
-            <FormField
-              control={form.control}
-              name="address"
-              render={({ field }) => (
-                <FormItem className="relative h-fit">
-                  <FormLabel
-                    className={cn(
-                      "pointer-events-none absolute top-1.5 left-3 text-base text-foreground/30 !font-normal p-0.5 bg-white transition-all duration-100",
-                      {
-                        "-top-2.5 text-sm": inputsFocused.address,
-                      },
-                    )}
-                  >
-                    Endereço *
-                  </FormLabel>
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className="w-full flex flex-col gap-10"
+    >
+      <div className="w-full flex flex-col gap-8">
+        <div className="w-full grid grid-cols-1 gap-8 sm:grid-cols-[calc(65%-8px)_calc(35%-8px)] sm:gap-4">
+          <div className="relative w-full h-fit flex flex-col gap-2">
+            <label
+              htmlFor="address"
+              className={cn("label", {
+                "-top-2.5 text-sm": inputsFocused.address,
+                "text-red-500": errors.address,
+              })}
+            >
+              Endereço *
+            </label>
 
-                  <FormControl>
-                    <Input
-                      {...field}
-                      onFocus={() => handleFocus("address", true)}
-                      onBlur={() => handleFocus("address", false)}
-                    />
-                  </FormControl>
-
-                  <FormMessage />
-                </FormItem>
-              )}
+            <input
+              {...register("address")}
+              type="text"
+              id="address"
+              className={cn("input", {
+                "border-red-500": errors.address,
+              })}
+              onFocus={() => handleFocus("address", true)}
+              onBlur={() => handleFocus("address", false)}
             />
 
-            <FormField
-              control={form.control}
-              name="number"
-              render={({ field }) => (
-                <FormItem className="relative h-fit">
-                  <FormLabel
-                    className={cn(
-                      "pointer-events-none absolute top-1.5 left-3 text-base text-foreground/30 !font-normal p-0.5 bg-white transition-all duration-100",
-                      {
-                        "-top-2.5 text-sm": inputsFocused.number,
-                      },
-                    )}
-                  >
-                    Número *
-                  </FormLabel>
-
-                  <FormControl>
-                    <Input
-                      {...field}
-                      onFocus={() => handleFocus("number", true)}
-                      onBlur={() => handleFocus("number", false)}
-                    />
-                  </FormControl>
-
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            {errors.address && (
+              <span className="text-red-500 leading-tight text-sm">
+                {errors.address.message}
+              </span>
+            )}
           </div>
 
-          <div className="w-full grid grid-cols-1 gap-8 sm:grid-cols-2 sm:gap-4">
-            <FormField
-              control={form.control}
-              name="city"
-              render={({ field }) => (
-                <FormItem className="relative h-fit">
-                  <FormLabel
-                    className={cn(
-                      "pointer-events-none absolute top-1.5 left-3 text-base text-foreground/30 !font-normal p-0.5 bg-white transition-all duration-100",
-                      {
-                        "-top-2.5 text-sm": inputsFocused.city,
-                      },
-                    )}
-                  >
-                    Cidade *
-                  </FormLabel>
+          <div className="relative w-full h-fit flex flex-col gap-2">
+            <label
+              htmlFor="number"
+              className={cn("label", {
+                "-top-2.5 text-sm": inputsFocused.number,
+                "text-red-500": errors.number,
+              })}
+            >
+              Número *
+            </label>
 
-                  <FormControl>
-                    <Input
-                      {...field}
-                      onFocus={() => handleFocus("city", true)}
-                      onBlur={() => handleFocus("city", false)}
-                    />
-                  </FormControl>
-
-                  <FormMessage />
-                </FormItem>
-              )}
+            <input
+              {...register("number")}
+              type="text"
+              id="address"
+              className={cn("input", {
+                "border-red-500": errors.number,
+              })}
+              onChange={handleNumber}
+              onFocus={() => handleFocus("number", true)}
+              onBlur={() => handleFocus("number", false)}
             />
 
-            <FormField
-              control={form.control}
-              name="country"
-              render={({ field }) => (
-                <FormItem className="relative h-fit">
-                  <FormLabel
-                    className={cn(
-                      "pointer-events-none absolute top-1.5 left-3 text-base text-foreground/30 !font-normal p-0.5 bg-white transition-all duration-100",
-                      {
-                        "-top-2.5 text-sm": inputsFocused.country,
-                      },
-                    )}
-                  >
-                    País *
-                  </FormLabel>
-
-                  <FormControl>
-                    <Input
-                      {...field}
-                      onFocus={() => handleFocus("country", true)}
-                      onBlur={() => handleFocus("country", false)}
-                    />
-                  </FormControl>
-
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            {errors.number && (
+              <span className="text-red-500 leading-tight text-sm">
+                {errors.number.message}
+              </span>
+            )}
           </div>
         </div>
 
-        <Button>Cadastrar</Button>
-      </form>
-    </Form>
+        <div className="w-full grid grid-cols-1 gap-8 sm:grid-cols-2 sm:gap-4">
+          <div className="relative w-full h-fit flex flex-col gap-2">
+            <label
+              htmlFor="city"
+              className={cn("label", {
+                "-top-2.5 text-sm": inputsFocused.city,
+                "text-red-500": errors.city,
+              })}
+            >
+              Cidade *
+            </label>
+
+            <input
+              {...register("city")}
+              type="text"
+              id="city"
+              className={cn("input", {
+                "border-red-500": errors.city,
+              })}
+              onFocus={() => handleFocus("city", true)}
+              onBlur={() => handleFocus("city", false)}
+            />
+
+            {errors.city && (
+              <span className="text-red-500 leading-tight text-sm">
+                {errors.city.message}
+              </span>
+            )}
+          </div>
+
+          <div className="relative w-full h-fit flex flex-col gap-2">
+            <label
+              htmlFor="country"
+              className={cn("label", {
+                "-top-2.5 text-sm": inputsFocused.country,
+                "text-red-500": errors.country,
+              })}
+            >
+              País *
+            </label>
+
+            <input
+              {...register("country")}
+              type="text"
+              id="address"
+              className={cn("input", {
+                "border-red-500": errors.country,
+              })}
+              onFocus={() => handleFocus("country", true)}
+              onBlur={() => handleFocus("country", false)}
+            />
+
+            {errors.country && (
+              <span className="text-red-500 leading-tight text-sm">
+                {errors.country.message}
+              </span>
+            )}
+          </div>
+        </div>
+      </div>
+
+      <button type="submit" className="button">
+        Cadastrar
+      </button>
+    </form>
   );
 };
 

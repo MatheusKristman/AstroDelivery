@@ -117,6 +117,18 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  .label {
+    @apply pointer-events-none absolute top-1.5 left-3 text-base text-foreground/30 !font-normal p-0.5 bg-white transition-all duration-100;
+  }
+
+  .input {
+    @apply w-full h-10 border border-input rounded-xl outline-none px-3 py-2 transition focus-visible:border-primary/50;
+  }
+
+  .button {
+    @apply w-full h-10 bg-primary rounded-xl cursor-pointer shadow-sm px-4 py-2 text-base text-white font-medium flex items-center justify-center transition hover:shadow-lg hover:shadow-primary/20;
+  }
 }
 
 html,

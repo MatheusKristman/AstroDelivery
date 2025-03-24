@@ -29,20 +29,66 @@ const EarthForm = () => {
   const [message, setMessage] = useState<string | null>(null);
   const [messageAnimationShown, setMessageAnimationShown] =
     useState<boolean>(false);
+  const [messageType, setMessageType] = useState<"success" | "error" | null>(
+    null,
+  );
 
   const {
     register,
     handleSubmit,
     getValues,
     setValue,
+    reset,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(formSchema),
   });
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log(values);
-    showToaster("Endereço cadastrado com sucesso");
+    const currentEarthAddresses = localStorage.getItem("earthAddresses");
+    let error = false;
+    let earthAddressesFormatted: {
+      address: string;
+      number: string;
+      city: string;
+      country: string;
+    }[];
+
+    if (currentEarthAddresses) {
+      earthAddressesFormatted = JSON.parse(currentEarthAddresses);
+
+      earthAddressesFormatted.forEach((earthAddress) => {
+        if (
+          earthAddress.address.toLowerCase() === values.address.toLowerCase() &&
+          earthAddress.number === values.number &&
+          earthAddress.city.toLowerCase() === values.city.toLowerCase() &&
+          earthAddress.country.toLowerCase() === values.country.toLowerCase()
+        ) {
+          error = true;
+        }
+      });
+
+      if (error) {
+        showToaster("Endereço já cadastrado!", "error");
+
+        return;
+      }
+
+      earthAddressesFormatted.push(values);
+
+      localStorage.setItem(
+        "earthAddresses",
+        JSON.stringify(earthAddressesFormatted),
+      );
+
+      showToaster("Endereço cadastrado com sucesso", "success");
+      reset();
+    } else {
+      localStorage.setItem("earthAddresses", JSON.stringify([values]));
+
+      showToaster("Endereço cadastrado com sucesso", "success");
+      reset();
+    }
   };
 
   const handleNumber = (e: ChangeEvent<HTMLInputElement>) => {
@@ -64,11 +110,13 @@ const EarthForm = () => {
     setInputsFocused((inputs) => ({ ...inputs, [input]: value }));
   };
 
-  const showToaster = (msg: string) => {
+  const showToaster = (msg: string, type: "success" | "error") => {
     setMessage(msg);
     setMessageAnimationShown(true);
+    setMessageType(type);
 
     setTimeout(() => setMessage(null), 3000);
+    setTimeout(() => setMessageType(null), 3000);
     setTimeout(() => setMessageAnimationShown(false), 2700);
   };
 
@@ -205,7 +253,11 @@ const EarthForm = () => {
       </button>
 
       {message && (
-        <Message animation={messageAnimationShown} message={message} />
+        <Message
+          animation={messageAnimationShown}
+          message={message}
+          type={messageType}
+        />
       )}
     </form>
   );

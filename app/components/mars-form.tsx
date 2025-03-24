@@ -22,12 +22,16 @@ const MarsForm = () => {
   const [message, setMessage] = useState<string | null>(null);
   const [messageAnimationShown, setMessageAnimationShown] =
     useState<boolean>(false);
+  const [messageType, setMessageType] = useState<"success" | "error" | null>(
+    null,
+  );
 
   const {
     register,
     handleSubmit,
     getValues,
     setValue,
+    reset,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(formSchema),
@@ -37,8 +41,42 @@ const MarsForm = () => {
   });
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log(values);
-    showToaster("Lote cadastrado com sucesso");
+    const currentMarsAddresses = localStorage.getItem("marsAddresses");
+    let error = false;
+    let marsAddressesFormatted: {
+      lot: string;
+    }[];
+
+    if (currentMarsAddresses) {
+      marsAddressesFormatted = JSON.parse(currentMarsAddresses);
+
+      marsAddressesFormatted.forEach((marsAddress) => {
+        if (marsAddress.lot === values.lot) {
+          error = true;
+        }
+      });
+
+      if (error) {
+        showToaster("Lote já cadastrado!", "error");
+
+        return;
+      }
+
+      marsAddressesFormatted.push(values);
+
+      localStorage.setItem(
+        "marsAddresses",
+        JSON.stringify(marsAddressesFormatted),
+      );
+
+      showToaster("Lote cadastrado com sucesso", "success");
+      reset();
+    } else {
+      localStorage.setItem("marsAddresses", JSON.stringify([values]));
+
+      showToaster("Lote cadastrado com sucesso", "success");
+      reset();
+    }
   };
 
   const handleNumber = (e: ChangeEvent<HTMLInputElement>) => {
@@ -57,11 +95,13 @@ const MarsForm = () => {
     setInputsFocused((inputs) => ({ ...inputs, [input]: value }));
   };
 
-  const showToaster = (msg: string) => {
+  const showToaster = (msg: string, type: "success" | "error") => {
     setMessage(msg);
     setMessageAnimationShown(true);
+    setMessageType(type);
 
     setTimeout(() => setMessage(null), 3000);
+    setTimeout(() => setMessageType(null), 3000);
     setTimeout(() => setMessageAnimationShown(false), 2700);
   };
 
@@ -106,7 +146,11 @@ const MarsForm = () => {
       </button>
 
       {message && (
-        <Message animation={messageAnimationShown} message={message} />
+        <Message
+          animation={messageAnimationShown}
+          message={message}
+          type={messageType}
+        />
       )}
     </form>
   );
